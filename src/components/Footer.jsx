@@ -1,7 +1,7 @@
 
 function Footer() {
     return (
-        <footer className="bg-white fixed bottom-0 w-full" aria-labelledby="footer-heading">
+        <footer className="fixed bottom-0 w-full" aria-labelledby="footer-heading">
             <h2 id="footer-heading" className="sr-only">Footer</h2>
 
             <div className="px-4 py-5 mx-auto max-w-7xl sm:px-6 lg:px-16">

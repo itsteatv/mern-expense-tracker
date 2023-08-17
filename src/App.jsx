@@ -67,8 +67,8 @@ function App() {
   ]
 
   return (
-    <main className="h-screen dark:bg-slate-900 dark:text-gray-100 duration-100">
-      <div className="fixed top-5 right-10 dark:bg-slate-800 bg-gray-100 rounded">
+    <main className="dark:bg-slate-900 dark:text-gray-100 duration-100">
+      <div className="absolute top-5 right-10 dark:bg-slate-800 bg-gray-100 rounded">
         {
           options?.map((option) => (
             <button onClick={() => setTheme(option.text)} key={option.text} className={`w-8 h-8 leading-9 text-xl rounded-full m-1 ${theme === option.text && "text-sky-600"}`}>

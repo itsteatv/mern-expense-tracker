@@ -1,15 +1,18 @@
 import { useState } from "react"
 import Table from "./Table"
+import { ToastContainer, toast } from "react-toastify";
 
 function Input() {
     const [name, setName] = useState("");
     const [dateTime, setDateTime] = useState("");
     const [description, setDescription] = useState("");
+    const [balance, setBalance] = useState(0);
 
     const addNewTransaction = async function (event) {
         event.preventDefault();
 
         const url = import.meta.env.VITE_REACT_APP_API_URL + "/transaction";
+        const price = name.split(" ")[0];
 
         try {
             const response = await fetch(url, {
@@ -18,22 +21,30 @@ function Input() {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    name, description, dateTime
+                    price, name: name.substring(price.length + 1), description, dateTime
                 }),
             });
 
             if (!response.ok) {
-                console.error("Request failed with status:", response.status);
+                console.error("Request failed with status:", response.statusText);
                 return;
             }
 
             const responseData = await response.json();
             console.log(responseData);
+
+            setName("");
+            setDateTime("");
+            setDescription("");
+
         } catch (error) {
-            console.error("An error occurred:", error);
+            toast.error("An error occurred" + error.message)
         }
     }
 
+    const handleBalanceChange = (newBalance) => {
+        setBalance(newBalance);
+    };
 
     return (
         <>
@@ -44,24 +55,26 @@ function Input() {
                             <div className="mt-6">
                                 <div className="space-y-6">
                                     <div>
-                                        <h1 className=" text-clamp mb-8 text-center text-3xl font-extrabold text-neutral-600 dark:text-gray-100 duration-100">$400.00</h1>
+                                        <h1 className="text-clamp mb-8 text-center text-3xl font-extrabold text-neutral-600 dark:text-gray-100 duration-100">
+                                            ${balance}
+                                        </h1>
                                         <label htmlFor="name" className="block text-sm font-medium text-neutral-600"> Product & Price </label>
                                         <div className="mt-1">
-                                            <input autoComplete="off" value={name} onChange={e => setName(e.target.value)} id="name" name="name" type="text" required="" placeholder="+100 laptop" className="block w-full px-5 py-3 text-base text-neutral-600 placeholder-gray-300 transition duration-100 ease-in-out transhtmlForm border border-transparent rounded-lg bg-gray-50 focus:outline-none focus:border-transparent focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-300 dark:bg-slate-800 dark:text-gray-100 dark:placeholder-gray-100"></input>
+                                            <input autoComplete="off" value={name} onChange={e => setName(e.target.value)} id="name" name="name" type="text" required="" placeholder="+100 laptop" className="block w-full px-5 py-3 text-base text-neutral-600 placeholder-gray-300 transition duration-100 ease-in-out transhtmlForm border border-transparent rounded-lg bg-gray-50 focus:outline-none focus:border-transparent focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-300 dark:bg-slate-800 dark:text-gray-100 dark:placeholder-gray-700"></input>
                                         </div>
                                     </div>
 
                                     <div>
                                         <label htmlFor="dateTime" className="block text-sm font-medium text-neutral-600"> Date </label>
                                         <div className="mt-1">
-                                            <input autoComplete="off" value={dateTime} onChange={e => setDateTime(e.target.value)} id="dateTime" name="dateTime" type="datetime-local" required="" className="block w-full px-5 py-3 text-base text-neutral-600 placeholder-gray-300 transition duration-100 ease-in-out transhtmlForm border border-transparent rounded-lg bg-gray-50 focus:outline-none focus:border-transparent focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-300 dark:bg-slate-800 dark:text-gray-100"></input>
+                                            <input autoComplete="off" value={dateTime} onChange={e => setDateTime(e.target.value)} id="dateTime" name="dateTime" type="datetime-local" required="" className="block w-full px-5 py-3 text-base text-neutral-600 placeholder-gray-300 transition duration-100 ease-in-out transhtmlForm border border-transparent rounded-lg bg-gray-50 focus:outline-none focus:border-transparent focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-300 dark:bg-slate-800 dark:text-gray-100 dark:placeholder-gray-700"></input>
                                         </div>
                                     </div>
 
                                     <div className="space-y-1">
                                         <label htmlFor="description" className="block text-sm font-medium text-neutral-600"> Description </label>
                                         <div className="mt-1">
-                                            <input autoComplete="off" value={description} onChange={e => setDescription(e.target.value)} id="description" name="description" type="text" required="" placeholder="description" className="block w-full px-5 py-3 text-base text-neutral-600 placeholder-gray-300 transition duration-100 ease-in-out transhtmlForm border border-transparent rounded-lg bg-gray-50 focus:outline-none focus:border-transparent focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-300 dark:bg-slate-800 dark:text-gray-100 dark:placeholder-pink-100"></input>
+                                            <input autoComplete="off" value={description} onChange={e => setDescription(e.target.value)} id="description" name="description" type="text" required="" placeholder="description" className="block w-full px-5 py-3 text-base text-neutral-600 placeholder-gray-300 transition duration-100 ease-in-out transhtmlForm border border-transparent rounded-lg bg-gray-50 focus:outline-none focus:border-transparent focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-300 dark:bg-slate-800 dark:text-gray-100 dark:placeholder-gray-700"></input>
                                         </div>
                                     </div>
                                     <div>
@@ -71,7 +84,7 @@ function Input() {
                             </div>
                         </div>
                         {/* TABLE */}
-                        <Table />
+                        <Table onBalanceChange={handleBalanceChange} />
                     </div>
                 </form>
             </section>
